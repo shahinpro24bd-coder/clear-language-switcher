@@ -116,8 +116,11 @@
     container.appendChild(wrap);
   }
 
+  var bound = false;
   function init() {
     document.querySelectorAll(".navbar-languages").forEach(build);
+    if (bound) return;
+    bound = true;
     document.addEventListener("click", preserveLanguageOnClick, true);
 
     document.addEventListener("click", function (event) {
@@ -152,4 +155,9 @@
   } else {
     init();
   }
+  /* After an in-place page swap this script re-runs before the bootstrap
+     that publishes window.__SITE_LANG__, so the first build uses the previous
+     page's language. The swap dispatches DOMContentLoaded once the bootstrap
+     has run — rebuild the toggle then so it shows the current language. */
+  document.addEventListener("DOMContentLoaded", init);
 })();
