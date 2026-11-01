@@ -1,29 +1,19 @@
-# Welcome to your Lovable project
+# Biadse Dental — Full Website Source
 
-This project was built with [Lovable](https://lovable.dev).
+Includes the complete website source, bundled images, styles, scripts, and English/Hebrew content.
 
-## Build with Lovable
+## Run locally
 
-Open your project in the [Lovable editor](https://lovable.dev) and keep building.
+1. Install Bun from https://bun.sh
+2. Open a terminal in this folder.
+3. Run `bun install`.
+4. Run `bun run dev`.
+5. Open the local address shown in the terminal.
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: connect the project to GitHub and every change made in Lovable is committed straight to your repository.
-- **Full ownership**: this code is yours. Push to your repository and your changes sync back into Lovable, ready for your next prompt.
+## Production build
 
-## Development
+Run `bun run build`.
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+This is the full TanStack Start source project, not a ready-to-upload static HTML export. The rendered pages use server-side rendering; opening the HTML snapshots directly does not reproduce language switching.
 
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
-```
-
-## Built with
-
-- TanStack Start
-- TypeScript
-- React
-- Tailwind CSS
+Dependency folders, generated build output, repository metadata, and private workspace files are intentionally excluded.
