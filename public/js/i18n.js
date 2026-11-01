@@ -116,8 +116,11 @@
     container.appendChild(wrap);
   }
 
+  var bound = false;
   function init() {
     document.querySelectorAll(".navbar-languages").forEach(build);
+    if (bound) return;
+    bound = true;
     document.addEventListener("click", preserveLanguageOnClick, true);
 
     document.addEventListener("click", function (event) {
