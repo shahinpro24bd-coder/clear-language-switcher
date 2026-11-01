@@ -147,14 +147,26 @@
     return { nodes: nodes, pending: pending, scripts: scripts, old: oldKids };
   }
 
-  function applyHead(plan) {
-    var keep = [];
-    plan.old.forEach(function (el) {
-      if (el.hasAttribute("data-speed") || (el.tagName === "SCRIPT" && isSpeedScript(el.src || ""))) keep.push(el);
-      else if (plan.nodes.indexOf(el) === -1) el.remove();
+  // Insert nodes in order WITHOUT moving any node already in <head>: moving a
+  // <link rel=stylesheet> makes the browser drop and reload it, which briefly
+  // unstyles the page.
+  function placeNodes(nodes, onlySheets) {
+    var cursor = null;
+    nodes.forEach(function (n) {
+      if (n.isConnected) { cursor = n; return; }
+      if (onlySheets && !sheetHref(n)) return;
+      var ref = cursor ? cursor.nextSibling : document.head.firstChild;
+      document.head.insertBefore(n, ref);
+      cursor = n;
     });
-    plan.nodes.forEach(function (n) { document.head.appendChild(n); });
-    keep.forEach(function (n) { document.head.appendChild(n); });
+  }
+
+  function applyHead(plan) {
+    plan.old.forEach(function (el) {
+      if (el.hasAttribute("data-speed") || (el.tagName === "SCRIPT" && isSpeedScript(el.src || ""))) return;
+      if (plan.nodes.indexOf(el) === -1) el.remove();
+    });
+    placeNodes(plan.nodes, false);
   }
 
   function hoistFunctions(code) {
@@ -250,9 +262,7 @@
       // Load new stylesheets (and Hebrew fonts) BEFORE swapping, so the new
       // page never paints unstyled for a moment.
       function preload() {
-        headPlan.nodes.forEach(function (n) {
-          if (sheetHref(n) && !n.isConnected) document.head.appendChild(n);
-        });
+        placeNodes(headPlan.nodes, true);
         var waits = headPlan.pending.slice();
         if (document.fonts && document.fonts.load && /lang="he"/.test(html.slice(0, 400))) {
           waits.push(Promise.all([
