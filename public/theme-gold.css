@@ -374,7 +374,10 @@ html[lang="he"] [class*="font-dancing"], html[lang="he"] [class*="playfair"] {
 html[lang="he"] body { line-height: 1.75; -webkit-font-smoothing: antialiased; }
 html[lang="he"] p, html[lang="he"] li { font-size: max(1em, 16px); font-weight: 400; }
 html[lang="he"] .lang-toggle, html[lang="he"] .lang-menu a { font-size: 13px; }
-/* Outlined headline letters are unreadable in Hebrew: render them solid. */
-html[lang="he"] * { -webkit-text-stroke: 0 !important; }
-html[lang="he"] [style*="transparent"], html[lang="he"] h1 { -webkit-text-fill-color: currentColor; }
-html[lang="he"] h1, html[lang="he"] h1 * { color: #fffaf1; text-shadow: 0 2px 14px rgba(70,45,15,.35); }
+/* The big hero word is outlined; in Hebrew make it solid so it reads clearly. */
+html[lang="he"] .hero-reference-word {
+  color: #fffaf1 !important;
+  -webkit-text-stroke: 0 !important;
+  text-shadow: 0 4px 24px rgba(70,42,10,.35) !important;
+  font-weight: 800 !important;
+}
