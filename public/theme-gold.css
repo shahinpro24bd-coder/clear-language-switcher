@@ -381,3 +381,6 @@ html[lang="he"] .hero-reference-word {
   text-shadow: 0 4px 24px rgba(70,42,10,.35) !important;
   font-weight: 800 !important;
 }
+
+/* Keep the page still while sections animate in after a page/language switch. */
+html, body { overflow-anchor: none; }
