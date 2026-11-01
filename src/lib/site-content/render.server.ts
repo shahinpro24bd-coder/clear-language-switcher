@@ -54,7 +54,7 @@ export async function renderSitePage(request: Request, slug: string): Promise<Re
 
   // SEO: self-referential hreflang alternates for every published language.
   const links: string[] = [];
-  if (lang === "he") {
+  {
     links.push(
       '<link rel="preconnect" href="https://fonts.googleapis.com" />' +
         '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />' +
