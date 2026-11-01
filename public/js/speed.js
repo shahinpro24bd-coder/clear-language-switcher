@@ -247,11 +247,34 @@
         });
       }
 
+      // Load new stylesheets (and Hebrew fonts) BEFORE swapping, so the new
+      // page never paints unstyled for a moment.
+      function preload() {
+        headPlan.nodes.forEach(function (n) {
+          if (sheetHref(n) && !n.isConnected) document.head.appendChild(n);
+        });
+        var waits = headPlan.pending.slice();
+        if (document.fonts && document.fonts.load && /lang="he"/.test(html.slice(0, 400))) {
+          waits.push(Promise.all([
+            document.fonts.load('400 16px "Heebo"', "\u05d0"),
+            document.fonts.load('700 16px "Heebo"', "\u05d0"),
+            document.fonts.load('700 32px "Frank Ruhl Libre"', "\u05d0")
+          ]).catch(function () {}));
+        }
+        return Promise.race([
+          Promise.all(waits),
+          new Promise(function (r) { setTimeout(r, 1500); })
+        ]);
+      }
+
+      return preload().then(function () {
+      if (token !== busy) return;
       if (document.startViewTransition) {
         var t = document.startViewTransition(update);
         return t.updateCallbackDone.then(afterSwap);
       }
       return update().then(afterSwap);
+      });
     }).catch(function () {
       if (token === busy) location.href = url.href;
     });
