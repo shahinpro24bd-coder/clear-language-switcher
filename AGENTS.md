@@ -19,4 +19,4 @@
 
 - Render every supported public language from the bundled snapshot so navigation never relies on runtime translation.
 - Keep the homepage before-and-after showcase clearly labeled as an illustrative visualization, not a patient outcome claim.
-- Public page switching is done in place by public/js/speed.js (loaded synchronously at the top of head by render.server); page scripts must tolerate being re-run after a swap, and listeners they add to window/document are removed automatically between pages.
+- Public page switching is done in place by public/js/speed.js (loaded synchronously at the top of head by render.server); page scripts must tolerate being re-run after a swap, and listeners they add to window/document are removed automatically between pages. After a swap, one-off entrance animations are finished instantly and scroll-reveal (.wow) boxes stay visible, so a swapped page never assembles itself on screen.
