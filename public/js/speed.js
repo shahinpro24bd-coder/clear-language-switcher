@@ -210,6 +210,26 @@
     }, Promise.resolve());
   }
 
+  // A swapped-in page must appear complete at once: jump every one-off
+  // entrance animation (fade/slide/reveal) to its end state so nothing pops
+  // in after the swap. Looping decorations keep running.
+  function finishEntrances() {
+    if (!document.getAnimations) return;
+    // Sections skipped by content-visibility have no animations yet; render
+    // them for this one check so their entrances are finished too.
+    var root = document.documentElement;
+    root.classList.add("speed-finishing");
+    var list = document.getAnimations();
+    root.classList.remove("speed-finishing");
+    list.forEach(function (a) {
+      try {
+        var t = a.effect && a.effect.getComputedTiming ? a.effect.getComputedTiming() : null;
+        if (!t || !isFinite(t.endTime)) return;
+        a.finish();
+      } catch (e) {}
+    });
+  }
+
   var busy = 0;
 
   function swap(url, push) {
@@ -237,6 +257,7 @@
         var dir = doc.documentElement.getAttribute("dir");
         if (dir) document.documentElement.setAttribute("dir", dir);
         else document.documentElement.removeAttribute("dir");
+        document.documentElement.classList.add("speed-swapped");
         document.documentElement.replaceChild(newBody, document.body);
         if (push) history.pushState({ speed: true }, "", url.href);
         if (url.hash && document.getElementById(url.hash.slice(1))) {
@@ -248,6 +269,7 @@
         } else {
           scrollTo(0, 0);
         }
+        finishEntrances();
         return Promise.all(headPlan.pending);
       }
 
@@ -363,7 +385,11 @@
 
   var vt = document.createElement("style");
   vt.setAttribute("data-speed", "");
-  vt.textContent = "::view-transition-old(root),::view-transition-new(root){animation-duration:.14s}";
+  vt.textContent =
+    "::view-transition-old(root),::view-transition-new(root){animation-duration:.14s}" +
+    // Scroll-reveal boxes would be hidden by the reveal script and pop in late.
+    "html.speed-swapped body .wow.wow{visibility:visible!important;animation:none!important}" +
+    "html.speed-finishing body *{content-visibility:visible!important}";
   document.head.appendChild(vt);
 
   persistent(function () {
