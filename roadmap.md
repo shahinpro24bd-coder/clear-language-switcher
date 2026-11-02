@@ -1,0 +1,3 @@
+- [x] Make all admin, login, and editor controls English.
+- [x] Align admin branding with Dr. Fatema Mirza; retain existing doctor defaults and verified contact destinations.
+- [x] Verify login, dashboard tabs, doctor fields, editor save, Hebrew preview with English controls, and sign out.

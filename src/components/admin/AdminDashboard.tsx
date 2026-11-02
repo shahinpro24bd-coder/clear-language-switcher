@@ -97,11 +97,11 @@ export function AdminDashboard({
   ];
 
   return (
-    <div className="min-h-dvh bg-admin-canvas text-foreground">
+    <div lang="en" dir="ltr" className="min-h-dvh bg-admin-canvas text-foreground">
       <header className="sticky top-0 z-10 bg-admin-bar text-admin-bar-foreground">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
           <span className={`${heading} text-2xl`}>
-            Dr. Fatema <span className="text-admin-accent">Admin</span>
+            Dr. Fatema Mirza <span className="text-admin-accent">Admin</span>
           </span>
           <div className="flex items-center gap-3">
             <a href="/" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 border border-admin-bar-foreground px-2 py-1 text-sm">

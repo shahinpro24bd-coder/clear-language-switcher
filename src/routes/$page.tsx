@@ -10,8 +10,8 @@ export const Route = createFileRoute("/$page")({
       "contact.html": "Contact",
     };
     const label = labels[params.page] ?? "Page";
-    const title = `${label} | Biadse Brothers Dental Clinic`;
-    const description = `Biadse Brothers Dental Clinic — ${label.toLowerCase()}: implants, veneers, whitening and braces in Baqa al-Gharbiyye.`;
+    const title = `${label} | Dr. Fatema Mirza`;
+    const description = `Dr. Fatema Mirza — ${label.toLowerCase()}: plastic and aesthetic surgical care, consultations and treatment information.`;
     return {
       meta: [
         { title },

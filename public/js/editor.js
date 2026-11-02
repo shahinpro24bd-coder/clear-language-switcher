@@ -12,7 +12,7 @@
     ".cms-inline-text:focus{outline:0;background:#fff!important;color:#0f172a!important;border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.2)}" +
     "[data-ck-attr]:hover{outline:2px dashed #2563eb!important;outline-offset:2px;cursor:text}" +
     "[data-ik]:hover,[data-ik-bg]:hover{outline:3px solid #16a34a!important;outline-offset:2px;cursor:pointer}" +
-    ".cms-inline-text:empty:before{content:'Metin';color:#64748b}";
+    ".cms-inline-text:empty:before{content:'Text';color:#64748b}";
   document.head.appendChild(style);
 
   function send(message) {
@@ -35,7 +35,7 @@
       span.className = "cms-inline-text";
       span.setAttribute("contenteditable", "plaintext-only");
       span.setAttribute("role", "textbox");
-      span.setAttribute("aria-label", "Metni düzenle");
+      span.setAttribute("aria-label", "Edit text");
       span.setAttribute("data-cms-key", key);
       span.spellcheck = true;
       span.textContent = raw.trim();

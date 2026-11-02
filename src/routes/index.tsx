@@ -4,10 +4,10 @@ import { createFileRoute } from "@tanstack/react-router";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Dr. Nihaia Biadse | Biadse Brothers Dental Clinic, Baqa al-Gharbiyye" },
-      { name: "description", content: "Advanced dental care in Baqa al-Gharbiyye — implants, veneers, whitening and braces. Free initial consultation." },
-      { property: "og:title", content: "Dr. Nihaia Biadse | Biadse Brothers Dental Clinic, Baqa al-Gharbiyye" },
-      { property: "og:description", content: "Where Science Meets a Perfect Smile — free consultation at Biadse Brothers Dental Clinic." },
+      { title: "Dr. Fatema Mirza | Plastic and Aesthetic Surgeon" },
+      { name: "description", content: "Explore Dr. Fatema Mirza's plastic and aesthetic surgical care, treatments and consultation appointments." },
+      { property: "og:title", content: "Dr. Fatema Mirza | Plastic and Aesthetic Surgeon" },
+      { property: "og:description", content: "Explore Dr. Fatema Mirza's plastic and aesthetic surgical care, treatments and consultation appointments." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
