@@ -6,11 +6,11 @@ import { AdminDashboard } from "@/components/admin/AdminDashboard";
 import { DEFAULT_ACCOUNT, KEYS, load, type Account } from "@/lib/admin-store";
 
 const PAGES = [
-  { slug: "index", label: "Anasayfa" },
-  { slug: "about", label: "Hakkımda" },
-  { slug: "service", label: "Tedaviler" },
-  { slug: "appoinment", label: "Randevu" },
-  { slug: "contact", label: "İletişim" },
+  { slug: "index", label: "Home" },
+  { slug: "about", label: "About" },
+  { slug: "service", label: "Treatments" },
+  { slug: "appoinment", label: "Appointment" },
+  { slug: "contact", label: "Contact" },
 ] as const;
 
 const SESSION_KEY = "site_admin_session_v1";
@@ -91,7 +91,7 @@ function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
   const [error, setError] = useState("");
 
   return (
-    <div className="flex min-h-dvh items-center justify-center bg-muted px-4">
+    <div lang="en" dir="ltr" className="flex min-h-dvh items-center justify-center bg-muted px-4">
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -101,7 +101,7 @@ function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
         }}
         className="w-full max-w-sm rounded-xl border border-border bg-card p-6 shadow-sm"
       >
-        <h1 className="text-lg font-semibold text-card-foreground">Dr. Fatema Admin</h1>
+        <h1 className="text-lg font-semibold text-card-foreground">Dr. Fatema Mirza Admin</h1>
         <p className="mt-1 text-sm text-muted-foreground">Sign in to manage the website.</p>
 
         <label className="mt-5 block text-xs font-medium text-muted-foreground">
@@ -148,19 +148,19 @@ function Editor({ onSignOut, onBack, initialPage }: { onSignOut: () => void; onB
   const frameSrc = `/${page}.html?edit=1&lang=${lang}`;
 
   const saveImage = useCallback(async (slot: string, file: File) => {
-    setStatus({ tone: "busy", message: "Görsel kaydediliyor…" });
+    setStatus({ tone: "busy", message: "Saving image…" });
     if (file.size > 1_500_000) {
-      setStatus({ tone: "error", message: "Görsel çok büyük (en fazla 1.5 MB)." });
+      setStatus({ tone: "error", message: "Image is too large (maximum 1.5 MB)." });
       return;
     }
     const dataUrl = await new Promise<string>((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = () => resolve(String(reader.result));
-      reader.onerror = () => reject(new Error("Dosya okunamadı."));
+      reader.onerror = () => reject(new Error("Could not read the file."));
       reader.readAsDataURL(file);
     }).catch(() => "");
     if (!dataUrl) {
-      setStatus({ tone: "error", message: "Görsel okunamadı." });
+      setStatus({ tone: "error", message: "Could not read the image." });
       return;
     }
     try {
@@ -171,9 +171,9 @@ function Editor({ onSignOut, onBack, initialPage }: { onSignOut: () => void; onB
         { source: "cms-admin", type: "image-saved", slot, url: dataUrl },
         "*",
       );
-      setStatus({ tone: "ok", message: "Görsel bu tarayıcıda güncellendi." });
+      setStatus({ tone: "ok", message: "Image updated in this browser." });
     } catch {
-      setStatus({ tone: "error", message: "Tarayıcı deposu dolu, görsel kaydedilemedi." });
+      setStatus({ tone: "error", message: "Browser storage is full. Could not save the image." });
     }
   }, []);
 
@@ -208,36 +208,36 @@ function Editor({ onSignOut, onBack, initialPage }: { onSignOut: () => void; onB
       current.langs[lang] = forLang;
       writeContent(current);
       setDirty({});
-      setStatus({ tone: "ok", message: "Değişiklikler bu tarayıcıda kaydedildi." });
+      setStatus({ tone: "ok", message: "Changes saved in this browser." });
     } catch {
-      setStatus({ tone: "error", message: "Kaydedilemedi." });
+      setStatus({ tone: "error", message: "Could not save changes." });
     }
   }
 
   function handleReset() {
-    if (!window.confirm("Bu tarayıcıdaki tüm değişiklikler silinsin mi?")) return;
+    if (!window.confirm("Delete all website content changes saved in this browser?")) return;
     window.localStorage.removeItem(CONTENT_KEY);
     setDirty({});
-    setStatus({ tone: "ok", message: "Orijinal içerik geri yüklendi." });
+    setStatus({ tone: "ok", message: "Original content restored." });
     frameRef.current?.contentWindow?.location.reload();
   }
 
   function switchTo(next: { page?: string; lang?: string }) {
-    if (dirtyCount && !window.confirm("Kaydedilmemiş değişiklikler var. Devam edilsin mi?")) return;
+    if (dirtyCount && !window.confirm("You have unsaved changes. Continue without saving?")) return;
     setDirty({});
     if (next.page) setPage(next.page);
     if (next.lang) setLang(next.lang);
   }
 
   return (
-    <div className="flex h-dvh min-h-0 flex-col bg-muted">
+    <div lang="en" dir="ltr" className="flex h-dvh min-h-0 flex-col bg-muted">
       <header className="grid shrink-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b border-border bg-card px-3 py-3 sm:px-4 lg:flex lg:flex-wrap">
         <div className="flex min-w-0 items-center gap-3">
           <Button type="button" variant="outline" size="sm" onClick={onBack}>
             ← Dashboard
           </Button>
           <select
-            aria-label="Düzenlenecek sayfa"
+            aria-label="Page to edit"
             value={page}
             onChange={(e) => switchTo({ page: e.target.value })}
             className="min-w-0 max-w-48 rounded-md border border-input bg-background px-2 py-1.5 text-sm text-foreground"
@@ -254,7 +254,7 @@ function Editor({ onSignOut, onBack, initialPage }: { onSignOut: () => void; onB
           {(
             [
               ["en", "English"],
-              ["he", "עברית"],
+              ["he", "Hebrew"],
             ] as const
           ).map(([code, label]) => (
             <Button
@@ -271,8 +271,7 @@ function Editor({ onSignOut, onBack, initialPage }: { onSignOut: () => void; onB
         </div>
 
         <span className="col-span-2 min-w-0 text-xs text-muted-foreground lg:col-auto">
-          Çerçeveli metni yerinde düzenleyin; görsele tıklayıp değiştirin. Değişiklikler bu
-          tarayıcıda saklanır.
+          Dr. Fatema Mirza · {dirtyCount ? "Unsaved changes" : "Website editor"}
         </span>
 
         <div className="col-span-2 flex min-w-0 flex-wrap items-center justify-end gap-2 lg:col-auto lg:ml-auto">
@@ -293,11 +292,11 @@ function Editor({ onSignOut, onBack, initialPage }: { onSignOut: () => void; onB
             size="sm"
           >
             <Save aria-hidden="true" />
-            Kaydet{dirtyCount ? ` (${dirtyCount})` : ""}
+            Save{dirtyCount ? ` (${dirtyCount})` : ""}
           </Button>
           <Button type="button" onClick={handleReset} variant="ghost" size="sm">
             <RotateCcw aria-hidden="true" />
-            Sıfırla
+            Reset
           </Button>
           <a
             href={`/${page}.html`}
@@ -306,7 +305,7 @@ function Editor({ onSignOut, onBack, initialPage }: { onSignOut: () => void; onB
             className="inline-flex h-8 items-center gap-1.5 rounded-md px-2 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground"
           >
             <ExternalLink className="size-4" aria-hidden="true" />
-            Siteyi gör
+            View site
           </a>
           <Button
             type="button"
@@ -316,7 +315,7 @@ function Editor({ onSignOut, onBack, initialPage }: { onSignOut: () => void; onB
             className="text-muted-foreground"
           >
             <LogOut aria-hidden="true" />
-            Çıkış
+            Sign out
           </Button>
         </div>
       </header>
@@ -326,16 +325,13 @@ function Editor({ onSignOut, onBack, initialPage }: { onSignOut: () => void; onB
           ref={frameRef}
           key={frameSrc}
           src={frameSrc}
-          title="Site önizleme"
+          title="Dr. Fatema Mirza website preview"
           className="min-h-0 min-w-0 flex-1 border-0 bg-background"
         />
         <aside className="hidden w-64 shrink-0 overflow-y-auto border-l border-border bg-card p-3 md:block">
           <h2 className="mb-2 text-sm font-semibold text-card-foreground">
-            Görseller ({images.length})
+            Images ({images.length})
           </h2>
-          <p className="mb-3 text-xs text-muted-foreground">
-            Değiştirmek istediğiniz görselde "Değiştir"e basın.
-          </p>
           <ul className="space-y-3">
             {images.map((img) => (
               <li key={img.slot} className="rounded-md border border-border p-2">
@@ -348,7 +344,7 @@ function Editor({ onSignOut, onBack, initialPage }: { onSignOut: () => void; onB
                     )
                   }
                   className="block w-full"
-                  title="Sayfada göster"
+                  title="Show on page"
                 >
                   <img src={img.url} alt={img.slot} className="h-24 w-full rounded object-cover" />
                 </button>
@@ -364,7 +360,7 @@ function Editor({ onSignOut, onBack, initialPage }: { onSignOut: () => void; onB
                   }}
                 >
                   <ImagePlus aria-hidden="true" />
-                  Değiştir
+                  Replace image
                 </Button>
               </li>
             ))}

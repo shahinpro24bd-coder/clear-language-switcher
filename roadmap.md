@@ -1,0 +1,3 @@
+- [ ] Make all admin, login, and editor controls English.
+- [ ] Align admin branding and default information with the public doctor.
+- [ ] Verify login, dashboard, and editor flows.
