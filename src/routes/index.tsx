@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import doctorLogo from "@/assets/doctor-dental-logo.png.asset.json";
 
 /** Home page — rendered from the database copy of the original markup. */
 export const Route = createFileRoute("/")({
@@ -15,7 +16,7 @@ export const Route = createFileRoute("/")({
       {
         rel: "preload",
         as: "image",
-        href: "/img/dr-fatema-logo.webp",
+        href: doctorLogo.url,
         fetchPriority: "high",
       },
     ],

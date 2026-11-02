@@ -1,4 +1,5 @@
 import fallbackSnapshotJson from "./fallback.generated.json?raw";
+import doctorLogo from "@/assets/doctor-dental-logo.png.asset.json";
 
 /** Every language the site is published in, in switcher order. */
 export const SITE_LANGS = ["en", "he"] as const;
@@ -25,6 +26,8 @@ export type ContentSnapshot = {
  * client by /js/local-content.js.
  */
 const SNAPSHOT: ContentSnapshot = JSON.parse(fallbackSnapshotJson);
+SNAPSHOT.images["doctor-logo"] = doctorLogo.url;
+SNAPSHOT.images["transparent-pixel"] = doctorLogo.url;
 
 export async function getContentSnapshot(_force = false): Promise<ContentSnapshot> {
   return SNAPSHOT;
