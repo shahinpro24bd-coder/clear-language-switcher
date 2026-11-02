@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ExternalLink, ImagePlus, LogOut, RotateCcw, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { AdminDashboard } from "@/components/admin/AdminDashboard";
+import { DEFAULT_ACCOUNT, KEYS, load, type Account } from "@/lib/admin-store";
 
 const PAGES = [
   { slug: "index", label: "Anasayfa" },
@@ -11,8 +13,6 @@ const PAGES = [
   { slug: "contact", label: "İletişim" },
 ] as const;
 
-const ADMIN_USER = "admin";
-const ADMIN_PASSWORD = "admin123";
 const SESSION_KEY = "site_admin_session_v1";
 const CONTENT_KEY = "site_local_content_v1";
 
@@ -39,12 +39,13 @@ function writeContent(next: LocalContent) {
 export const Route = createFileRoute("/admin")({
   ssr: false,
   head: () => ({
+    links: [{ rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Teko:wght@500;600&display=swap" }],
     meta: [
-      { title: "İçerik Yönetimi | Biadse Dental Clinic" },
-      { name: "description", content: "Site metinlerini ve görsellerini düzenleyin." },
+      { title: "Admin Panel | Dr. Fatema Mirza" },
+      { name: "description", content: "Manage Dr. Fatema Mirza website content, treatments and appointment requests." },
       { name: "robots", content: "noindex, nofollow" },
-      { property: "og:title", content: "İçerik Yönetimi | Biadse Dental Clinic" },
-      { property: "og:description", content: "Site metinlerini ve görsellerini düzenleyin." },
+      { property: "og:title", content: "Admin Panel | Dr. Fatema Mirza" },
+      { property: "og:description", content: "Manage Dr. Fatema Mirza website content, treatments and appointment requests." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -63,6 +64,12 @@ function AdminPage() {
     setChecked(true);
   }, []);
 
+  const [editing, setEditing] = useState<string | null>(null);
+  const signOut = () => {
+    window.localStorage.removeItem(SESSION_KEY);
+    setAuthed(false);
+    setEditing(null);
+  };
   if (!checked) return null;
   if (!authed)
     return (
@@ -73,14 +80,9 @@ function AdminPage() {
         }}
       />
     );
-  return (
-    <Editor
-      onSignOut={() => {
-        window.localStorage.removeItem(SESSION_KEY);
-        setAuthed(false);
-      }}
-    />
-  );
+  if (editing)
+    return <Editor initialPage={editing} onBack={() => setEditing(null)} onSignOut={signOut} />;
+  return <AdminDashboard onEditPage={setEditing} onSignOut={signOut} />;
 }
 
 function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
@@ -93,16 +95,17 @@ function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          if (user.trim() === ADMIN_USER && password === ADMIN_PASSWORD) onSuccess();
-          else setError("Kullanıcı adı veya şifre hatalı.");
+          const acc = load<Account>(KEYS.account, DEFAULT_ACCOUNT);
+          if (user.trim() === acc.username && password === acc.password) onSuccess();
+          else setError("Wrong username or password.");
         }}
         className="w-full max-w-sm rounded-xl border border-border bg-card p-6 shadow-sm"
       >
-        <h1 className="text-lg font-semibold text-card-foreground">İçerik Yönetimi</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Devam etmek için giriş yapın.</p>
+        <h1 className="text-lg font-semibold text-card-foreground">Dr. Fatema Admin</h1>
+        <p className="mt-1 text-sm text-muted-foreground">Sign in to manage the website.</p>
 
         <label className="mt-5 block text-xs font-medium text-muted-foreground">
-          Kullanıcı adı
+          Username
           <input
             value={user}
             onChange={(e) => setUser(e.target.value)}
@@ -111,7 +114,7 @@ function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
           />
         </label>
         <label className="mt-3 block text-xs font-medium text-muted-foreground">
-          Şifre
+          Password
           <input
             type="password"
             value={password}
@@ -124,16 +127,16 @@ function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
         {error ? <p className="mt-3 text-xs text-destructive">{error}</p> : null}
 
         <Button type="submit" className="mt-5 w-full">
-          Giriş yap
+          Sign in
         </Button>
       </form>
     </div>
   );
 }
 
-function Editor({ onSignOut }: { onSignOut: () => void }) {
+function Editor({ onSignOut, onBack, initialPage }: { onSignOut: () => void; onBack: () => void; initialPage: string }) {
   const frameRef = useRef<HTMLIFrameElement>(null);
-  const [page, setPage] = useState<string>("index");
+  const [page, setPage] = useState<string>(initialPage);
   const [lang, setLang] = useState<string>("en");
   const [dirty, setDirty] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<Status>({ tone: "idle", message: "" });
@@ -230,9 +233,9 @@ function Editor({ onSignOut }: { onSignOut: () => void }) {
     <div className="flex h-dvh min-h-0 flex-col bg-muted">
       <header className="grid shrink-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b border-border bg-card px-3 py-3 sm:px-4 lg:flex lg:flex-wrap">
         <div className="flex min-w-0 items-center gap-3">
-          <span className="shrink-0 text-sm font-semibold text-card-foreground">
-            İçerik Yönetimi
-          </span>
+          <Button type="button" variant="outline" size="sm" onClick={onBack}>
+            ← Dashboard
+          </Button>
           <select
             aria-label="Düzenlenecek sayfa"
             value={page}
