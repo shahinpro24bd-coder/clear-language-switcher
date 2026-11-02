@@ -27,6 +27,7 @@ export type ContentSnapshot = {
  */
 const SNAPSHOT: ContentSnapshot = JSON.parse(fallbackSnapshotJson);
 SNAPSHOT.images["doctor-logo"] = doctorLogo.url;
+SNAPSHOT.images["dr-fatema-logo"] = doctorLogo.url;
 SNAPSHOT.images["transparent-pixel"] = doctorLogo.url;
 
 export async function getContentSnapshot(_force = false): Promise<ContentSnapshot> {
