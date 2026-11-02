@@ -88,7 +88,70 @@
     });
   }
 
+  function readJson(key) {
+    try {
+      return JSON.parse(localStorage.getItem(key) || "null");
+    } catch (err) {
+      return null;
+    }
+  }
+
+  /* Contact details saved from the admin "Contact Info" tab. */
+  function applyContact() {
+    var c = readJson("site_admin_contact_v1");
+    if (!c) return;
+    var digits = function (v) { return String(v || "").replace(/[^0-9]/g, ""); };
+    if (c.phone) {
+      document.querySelectorAll('a[href^="tel:"]').forEach(function (a) {
+        a.setAttribute("href", "tel:+" + digits(c.phone));
+      });
+    }
+    if (c.whatsapp) {
+      document.querySelectorAll('a[href*="wa.me/"]').forEach(function (a) {
+        var rest = (a.getAttribute("href") || "").split("wa.me/")[1] || "";
+        var q = rest.indexOf("?") >= 0 ? rest.slice(rest.indexOf("?")) : "";
+        a.setAttribute("href", "https://wa.me/" + digits(c.whatsapp) + q);
+      });
+    }
+    if (c.instagram) {
+      document.querySelectorAll('a[href*="instagram.com"]').forEach(function (a) {
+        a.setAttribute("href", c.instagram);
+      });
+    }
+    if (c.facebook) {
+      document.querySelectorAll("a .fa-facebook-f").forEach(function (i) {
+        i.closest("a").setAttribute("href", c.facebook);
+      });
+    }
+  }
+
+  /* Keep a copy of appointment requests for the admin inbox (this browser). */
+  function onRequestClick(e) {
+    var btn = e.target && e.target.closest && e.target.closest("#appo13 .appo8, #appo13 button[type=submit]");
+    if (!btn) return;
+    var val = function (id) { var el = document.getElementById(id); return el ? el.value.trim() : ""; };
+    var name = val("appo14");
+    var phone = val("appo15");
+    if (!name || !phone) return;
+    var list = readJson("site_admin_requests_v1") || [];
+    var now = Date.now();
+    if (list[0] && list[0].phone === phone && now - list[0].createdAt < 5000) return;
+    list.unshift({
+      id: String(now),
+      name: name,
+      phone: phone,
+      date: val("appo16"),
+      message: val("appo17"),
+      page: location.pathname,
+      createdAt: now,
+      read: false,
+    });
+    try { localStorage.setItem("site_admin_requests_v1", JSON.stringify(list.slice(0, 500))); } catch (err) {}
+  }
+  document.addEventListener("click", onRequestClick, true);
+
   function apply() {
+    applyContact();
     var data = read();
     if (!data) return;
     var lang = window.__SITE_LANG__ || "en";
