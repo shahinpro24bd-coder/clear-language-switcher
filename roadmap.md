@@ -1,3 +1,7 @@
 - [x] Make all admin, login, and editor controls English.
 - [x] Align admin branding with Dr. Fatema Mirza; retain existing doctor defaults and verified contact destinations.
 - [x] Verify login, dashboard tabs, doctor fields, editor save, Hebrew preview with English controls, and sign out.
+- [x] Replace site logo with the latest uploaded logo and derive matching browser icons; verified image loading on all five pages and both languages.
+- [x] Confirm public page text and metadata contain no Lovable branding; replace default browser icons.
+- [ ] Hide published Lovable badge — blocked by current Free plan (requires eligible paid plan).
+- [ ] Remove Lovable from the shared URL — requires the user's own custom domain; no domain is connected.
